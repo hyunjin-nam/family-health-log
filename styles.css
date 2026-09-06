@@ -1,0 +1,521 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: #ffffff;
+    color: #000000;
+    line-height: 1.6;
+}
+
+/* ============================================================================
+   LOGIN SCREEN
+   ============================================================================ */
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+#login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.login-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    font-weight: 300;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #000;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.login-container input:focus {
+    outline: none;
+    border-color: #000;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.login-container button {
+    width: 100%;
+    padding: 0.75rem;
+    background: #000;
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.login-container button:hover {
+    background: #333;
+}
+
+/* ============================================================================
+   APP SCREEN
+   ============================================================================ */
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 200px;
+    background: #f5f5f5;
+    border-right: 1px solid #e0e0e0;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2 {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+.sidebar nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nav-btn {
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.nav-btn:hover {
+    background: #e0e0e0;
+}
+
+.nav-btn.active {
+    background: #000;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.action-btn {
+    padding: 0.5rem 0.75rem;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background: #f0f0f0;
+}
+
+.action-btn.logout {
+    background: #f0f0f0;
+}
+
+.action-btn.logout:hover {
+    background: #e0e0e0;
+}
+
+/* ============================================================================
+   VIEWS
+   ============================================================================ */
+
+.view {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.view.active {
+    display: block;
+}
+
+.view-content {
+    padding: 2rem;
+    max-width: 900px;
+}
+
+.view-content h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+}
+
+/* ============================================================================
+   FORM ELEMENTS
+   ============================================================================ */
+
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #000;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.tag-input-group {
+    position: relative;
+}
+
+.tag-input-group input {
+    width: 100%;
+}
+
+.tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: #000;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.tag-remove {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0;
+    margin-left: 0.25rem;
+}
+
+.tag-remove:hover {
+    opacity: 0.8;
+}
+
+.tag-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+.suggestion {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.suggestion:hover {
+    background: #f5f5f5;
+}
+
+.markdown-preview {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f9f9f9;
+    border-left: 4px solid #000;
+    display: none;
+}
+
+/* ============================================================================
+   BUTTONS
+   ============================================================================ */
+
+.btn-primary,
+.btn-danger {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-right: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: #000;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #333;
+}
+
+.btn-danger {
+    background: #f0f0f0;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+.btn-danger:hover {
+    background: #e0e0e0;
+}
+
+/* ============================================================================
+   CALENDAR
+   ============================================================================ */
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.calendar-nav button {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.calendar-nav button:hover {
+    background: #333;
+}
+
+.calendar-nav h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    min-width: 200px;
+    text-align: center;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #e0e0e0;
+    padding: 1px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    background: #fff;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: all 0.2s;
+    min-height: 100px;
+}
+
+.calendar-day:hover {
+    background: #f5f5f5;
+}
+
+.calendar-day.has-entry {
+    background: #f9f9f9;
+    border: 2px solid #000;
+}
+
+.calendar-day.empty {
+    background: #fafafa;
+    cursor: default;
+}
+
+.calendar-day-number {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.calendar-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+}
+
+.calendar-tag {
+    background: #000;
+    color: #fff;
+    padding: 0.1rem 0.3rem;
+    border-radius: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.calendar-more {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+/* ============================================================================
+   SUMMARY
+   ============================================================================ */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.tag-frequency {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.tag-freq {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f5f5f5;
+    border-left: 4px solid #000;
+}
+
+.tag-freq span:first-child {
+    font-weight: 500;
+}
+
+.tag-freq .count {
+    background: #000;
+    color: #fff;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ============================================================================ */
+
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+        flex-direction: row;
+        padding: 1rem;
+    }
+
+    .sidebar h2 {
+        margin-bottom: 0;
+        margin-right: 1rem;
+    }
+
+    .sidebar nav {
+        flex-direction: row;
+        gap: 0.25rem;
+        flex: 1;
+    }
+
+    .nav-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .sidebar-actions {
+        flex-direction: row;
+        margin-top: 0;
+    }
+
+    .action-btn {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .view-content {
+        padding: 1rem;
+    }
+
+    .calendar-day {
+        min-height: 80px;
+    }
+
+    .stats {
+        gap: 1rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+    }
+}

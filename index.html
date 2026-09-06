@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pregnancy Journal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <h1>🤍 Pregnancy Journal</h1>
+            <input 
+                type="password" 
+                id="password-input" 
+                placeholder="Enter password" 
+                autocomplete="off"
+            >
+            <button onclick="login()">Login</button>
+        </div>
+    </div>
+
+    <div id="app-screen" class="screen">
+        <div class="app-container">
+            <!-- Sidebar Navigation -->
+            <div class="sidebar">
+                <h2>Journal</h2>
+                <nav>
+                    <button class="nav-btn active" onclick="showView('write')">✍️ Write</button>
+                    <button class="nav-btn" onclick="showView('calendar')">📅 Calendar</button>
+                    <button class="nav-btn" onclick="showView('summary')">📊 Summary</button>
+                </nav>
+                <div class="sidebar-actions">
+                    <button onclick="exportData()" class="action-btn">📥 Export</button>
+                    <button onclick="importData()" class="action-btn">📤 Import</button>
+                    <button onclick="logout()" class="action-btn logout">🚪 Logout</button>
+                </div>
+            </div>
+
+            <!-- Write View -->
+            <div id="write-view" class="view active">
+                <div class="view-content">
+                    <h2>Today's Entry</h2>
+                    
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="entry-date">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tags</label>
+                        <div class="tag-input-group">
+                            <input 
+                                type="text" 
+                                id="tag-input" 
+                                placeholder="Type tag, press Enter or comma"
+                                onkeydown="handleTagInput(event)"
+                                onblur="commitPendingTag()"
+                            >
+                        </div>
+                        <div id="current-tags" class="tags-list"></div>
+                        <div id="tag-suggestions" class="tag-suggestions"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea 
+                            id="entry-text" 
+                            placeholder="Write your thoughts... (supports markdown)"
+                            rows="15"
+                        ></textarea>
+                        <div id="markdown-preview" class="markdown-preview"></div>
+                    </div>
+
+                    <button onclick="saveEntry()" class="btn-primary">💾 Save Entry</button>
+                    <button onclick="deleteEntry()" class="btn-danger">🗑️ Delete</button>
+                </div>
+            </div>
+
+            <!-- Calendar View -->
+            <div id="calendar-view" class="view">
+                <div class="view-content">
+                    <h2>Calendar</h2>
+                    <div class="calendar-nav">
+                        <button onclick="previousMonth()">←</button>
+                        <h3 id="calendar-month"></h3>
+                        <button onclick="nextMonth()">→</button>
+                    </div>
+                    <div id="calendar-grid" class="calendar-grid"></div>
+                </div>
+            </div>
+
+            <!-- Summary View -->
+            <div id="summary-view" class="view">
+                <div class="view-content">
+                    <h2>Summary</h2>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value" id="stat-entries">0</div>
+                            <div class="stat-label">Total Entries</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="stat-streak">0</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                    </div>
+                    <div id="tag-frequency" class="tag-frequency"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js';
+        import { getDatabase, ref, get, set, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js';
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDDSfxQpyNfJfCb0V1D8K1U5j3Z9yzJmNc",
+            authDomain: "family-health-log-f9af4.firebaseapp.com",
+            databaseURL: "https://family-health-log-f9af4-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "family-health-log-f9af4",
+            storageBucket: "family-health-log-f9af4.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef1234567890"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Make Firebase accessible globally
+        window.firebase = { database, ref, get, set, remove, onValue };
+    </script>
+
+    <script src="app.js"></script>
+</body>
+</html>
