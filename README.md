@@ -1,4 +1,4 @@
-# 🤍 Pregnancy Journal
+# Family Health Log
 
 GitHub Pages + Firebase. No backend needed.
 

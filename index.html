@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="login-screen" class="screen active">
+    <div id="login-screen" class="active">
         <div class="login-container">
-            <h1>Pregnancy Journal</h1>
+            <h1>Family Health Log</h1>
             <input 
                 type="password" 
                 id="password-input" 
@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <div id="app-screen" class="screen">
+    <div id="app-screen">
         <div class="app-container">
             <!-- Sidebar Navigation -->
             <div class="sidebar">
@@ -31,8 +31,6 @@
                     <button class="nav-btn" onclick="showView('summary')">Summary</button>
                 </nav>
                 <div class="sidebar-actions">
-                    <button onclick="exportData()" class="action-btn">Export</button>
-                    <button onclick="importData()" class="action-btn">Import</button>
                     <button onclick="logout()" class="action-btn logout">Logout</button>
                 </div>
             </div>
@@ -93,18 +91,8 @@
             <!-- Summary View -->
             <div id="summary-view" class="view">
                 <div class="view-content">
-                    <h2>Summary</h2>
-                    <div class="stats">
-                        <div class="stat">
-                            <div class="stat-value" id="stat-entries">0</div>
-                            <div class="stat-label">Total Entries</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value" id="stat-streak">0</div>
-                            <div class="stat-label">Day Streak</div>
-                        </div>
-                    </div>
-                    <div id="tag-frequency" class="tag-frequency"></div>
+                    <h2>All Entries</h2>
+                    <div id="entries-list" class="entries-list"></div>
                 </div>
             </div>
         </div>

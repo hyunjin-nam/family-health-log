@@ -12,20 +12,37 @@ body {
 }
 
 /* Login Screen */
-.screen {
-    display: none;
-}
-
-.screen.active {
-    display: block;
-}
-
 #login-screen {
-    min-height: 100vh;
-    display: flex;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #fff;
+    z-index: 1000;
     align-items: center;
     justify-content: center;
     padding: 20px;
+}
+
+#login-screen.active {
+    display: flex;
+}
+
+#app-screen {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #fff;
+    z-index: 1;
+}
+
+#app-screen.active {
+    display: flex;
 }
 
 .login-container {
@@ -353,6 +370,48 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Entries List */
+.entries-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.entry-item {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #fafafa;
+}
+
+.entry-date {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.entry-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.entry-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    background: #000;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 3px;
+}
+
+.entry-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: #333;
 }
 
 /* Summary */

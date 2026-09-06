@@ -296,31 +296,29 @@ function nextMonth() {
 // ============================================================================
 
 function updateSummary() {
-    // Total entries
-    const entryCount = Object.keys(allEntries).length;
-    document.getElementById('stat-entries').textContent = entryCount;
+    const dates = Object.keys(allEntries).sort().reverse();
     
-    // Day streak
-    const streak = calculateStreak();
-    document.getElementById('stat-streak').textContent = streak;
+    if (dates.length === 0) {
+        document.getElementById('entries-list').innerHTML = '<p style="color: #999;">No entries yet</p>';
+        return;
+    }
     
-    // Tag frequency
-    const tagFreq = {};
-    Object.values(allEntries).forEach(entry => {
-        (entry.tags || []).forEach(tag => {
-            tagFreq[tag] = (tagFreq[tag] || 0) + 1;
-        });
-    });
+    const html = dates.map(date => {
+        const entry = allEntries[date];
+        const tags = (entry.tags || []).map(tag => `<span class="entry-tag">${tag}</span>`).join('');
+        const text = (entry.text || '').substring(0, 200);
+        const preview = text + (entry.text.length > 200 ? '...' : '');
+        
+        return `
+            <div class="entry-item">
+                <div class="entry-date">${date}</div>
+                <div class="entry-tags">${tags}</div>
+                <div class="entry-text">${preview}</div>
+            </div>
+        `;
+    }).join('');
     
-    const sorted = Object.entries(tagFreq)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10);
-    
-    const html = sorted
-        .map(([tag, count]) => `<div class="tag-freq"><span>${tag}</span> <span class="count">${count}</span></div>`)
-        .join('');
-    
-    document.getElementById('tag-frequency').innerHTML = html || '<p>No tags yet</p>';
+    document.getElementById('entries-list').innerHTML = html;
 }
 
 function calculateStreak() {
@@ -366,44 +364,3 @@ function showView(viewName) {
     }
 }
 
-// ============================================================================
-// EXPORT / IMPORT
-// ============================================================================
-
-function exportData() {
-    const dataStr = JSON.stringify(allEntries, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `pregnancy-journal-backup-${new Date().toISOString().split('T')[0]}.json`;
-    a.click();
-}
-
-function importData() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    
-    input.onchange = async (e) => {
-        const file = e.target.files[0];
-        const text = await file.text();
-        const data = JSON.parse(text);
-        
-        if (confirm(`Import ${Object.keys(data).length} entries? This will overwrite existing data.`)) {
-            try {
-                for (const [date, entry] of Object.entries(data)) {
-                    const entryRef = window.firebase.ref(window.firebase.database, `entries/${date}`);
-                    await window.firebase.set(entryRef, entry);
-                }
-                alert('Import complete!');
-                await loadAllEntries();
-            } catch (error) {
-                console.error('Error importing:', error);
-                alert('Error importing data');
-            }
-        }
-    };
-    
-    input.click();
-}
