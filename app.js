@@ -1,6 +1,5 @@
 // Password for login
 const PASSWORD = 'hyunjinjakob';
-const PASSWORD_HASH = hashPassword(PASSWORD);
 
 // State
 let currentUser = null;
@@ -23,14 +22,23 @@ function login() {
     const input = document.getElementById('password-input');
     const password = input.value;
     
-    if (hashPassword(password) === PASSWORD_HASH) {
+    console.log('Login attempt with password:', password);
+    
+    if (password === PASSWORD) {
+        console.log('Password correct!');
         localStorage.setItem('journal_auth', 'true');
         currentUser = true;
-        document.getElementById('login-screen').classList.remove('active');
-        document.getElementById('app-screen').classList.add('active');
+        
+        const loginScreen = document.getElementById('login-screen');
+        const appScreen = document.getElementById('app-screen');
+        
+        loginScreen.style.display = 'none';
+        appScreen.style.display = 'flex';
+        
         input.value = '';
         loadAllEntries();
     } else {
+        console.log('Wrong password');
         alert('Wrong password');
         input.value = '';
     }
@@ -40,8 +48,9 @@ function logout() {
     if (confirm('Logout?')) {
         localStorage.removeItem('journal_auth');
         currentUser = null;
-        document.getElementById('app-screen').classList.remove('active');
-        document.getElementById('login-screen').classList.add('active');
+        document.getElementById('app-screen').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('password-input').value = '';
         document.getElementById('password-input').focus();
     }
 }
@@ -49,18 +58,17 @@ function logout() {
 function checkLogin() {
     if (localStorage.getItem('journal_auth')) {
         currentUser = true;
-        document.getElementById('login-screen').classList.remove('active');
-        document.getElementById('app-screen').classList.add('active');
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app-screen').style.display = 'flex';
         loadAllEntries();
     } else {
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('app-screen').style.display = 'none';
         document.getElementById('password-input').focus();
     }
 }
 
-function hashPassword(password) {
-    // Simple hash for local storage
-    return btoa(password + '::journal-salt');
-}
+
 
 // ============================================================================
 // ENTRIES MANAGEMENT
