@@ -12,6 +12,8 @@ let currentMonth = new Date();
 document.addEventListener('DOMContentLoaded', () => {
     checkLogin();
     setDefaultDate();
+    document.getElementById('entry-text').addEventListener('input', updateMarkdownPreview);
+    updateMarkdownPreview();
 });
 
 // ============================================================================
@@ -59,6 +61,93 @@ function checkLogin() {
 }
 
 
+
+// ============================================================================
+// MARKDOWN RENDERING
+// ============================================================================
+
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+function parseInline(text) {
+    return escapeHtml(text)
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+        .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+
+function renderMarkdown(text) {
+    if (!text || !text.trim()) return '';
+
+    const lines = text.split('\n');
+    const html = [];
+    let listType = null; // 'ul' | 'ol' | null
+    let paragraph = [];
+
+    const flushParagraph = () => {
+        if (paragraph.length) {
+            html.push(`<p>${paragraph.join('<br>')}</p>`);
+            paragraph = [];
+        }
+    };
+
+    const closeList = () => {
+        if (listType) {
+            html.push(`</${listType}>`);
+            listType = null;
+        }
+    };
+
+    for (const rawLine of lines) {
+        const line = rawLine.trimEnd();
+        const heading = line.match(/^(#{1,4})\s+(.*)$/);
+        const bullet = line.match(/^[-*]\s+(.*)$/);
+        const numbered = line.match(/^\d+\.\s+(.*)$/);
+        const quote = line.match(/^>\s?(.*)$/);
+
+        if (heading) {
+            flushParagraph();
+            closeList();
+            const level = heading[1].length;
+            html.push(`<h${level}>${parseInline(heading[2])}</h${level}>`);
+        } else if (bullet) {
+            flushParagraph();
+            if (listType !== 'ul') { closeList(); html.push('<ul>'); listType = 'ul'; }
+            html.push(`<li>${parseInline(bullet[1])}</li>`);
+        } else if (numbered) {
+            flushParagraph();
+            if (listType !== 'ol') { closeList(); html.push('<ol>'); listType = 'ol'; }
+            html.push(`<li>${parseInline(numbered[1])}</li>`);
+        } else if (quote) {
+            flushParagraph();
+            closeList();
+            html.push(`<blockquote>${parseInline(quote[1])}</blockquote>`);
+        } else if (line === '') {
+            flushParagraph();
+            closeList();
+        } else {
+            closeList();
+            paragraph.push(parseInline(line));
+        }
+    }
+    flushParagraph();
+    closeList();
+
+    return html.join('');
+}
+
+function updateMarkdownPreview() {
+    const text = document.getElementById('entry-text').value;
+    const preview = document.getElementById('markdown-preview');
+    preview.innerHTML = text.trim()
+        ? renderMarkdown(text)
+        : '<p class="preview-empty">Preview appears here as you write.</p>';
+}
 
 // ============================================================================
 // ENTRIES MANAGEMENT
@@ -148,6 +237,7 @@ async function loadEntry(date) {
         currentTags = [];
         renderTags();
     }
+    updateMarkdownPreview();
 }
 
 function clearForm() {
@@ -155,6 +245,7 @@ function clearForm() {
     document.getElementById('entry-text').value = '';
     currentTags = [];
     renderTags();
+    updateMarkdownPreview();
 }
 
 function setDefaultDate() {
@@ -299,21 +390,20 @@ function updateSummary() {
     const dates = Object.keys(allEntries).sort().reverse();
     
     if (dates.length === 0) {
-        document.getElementById('entries-list').innerHTML = '<p style="color: #999;">No entries yet</p>';
+        document.getElementById('entries-list').innerHTML = '<p class="empty-state">No entries yet</p>';
         return;
     }
     
     const html = dates.map(date => {
         const entry = allEntries[date];
         const tags = (entry.tags || []).map(tag => `<span class="entry-tag">${tag}</span>`).join('');
-        const text = (entry.text || '').substring(0, 200);
-        const preview = text + (entry.text.length > 200 ? '...' : '');
+        const rendered = renderMarkdown(entry.text || '');
         
         return `
             <div class="entry-item">
                 <div class="entry-date">${date}</div>
                 <div class="entry-tags">${tags}</div>
-                <div class="entry-text">${preview}</div>
+                <div class="entry-text markdown-body">${rendered}</div>
             </div>
         `;
     }).join('');

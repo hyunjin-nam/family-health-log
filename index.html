@@ -64,10 +64,11 @@
                         <label>Notes</label>
                         <textarea 
                             id="entry-text" 
-                            placeholder="Write your thoughts... (supports markdown)"
+                            placeholder="Write your thoughts... (supports markdown: # heading, **bold**, - list)"
                             rows="15"
                         ></textarea>
-                        <div id="markdown-preview" class="markdown-preview"></div>
+                        <div class="preview-label">Preview</div>
+                        <div id="markdown-preview" class="markdown-preview markdown-body"></div>
                     </div>
 
                     <button onclick="saveEntry()" class="btn-primary">Save Entry</button>
