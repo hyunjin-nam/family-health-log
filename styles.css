@@ -5,16 +5,13 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: #ffffff;
-    color: #000000;
-    line-height: 1.6;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #fff;
+    color: #000;
+    font-size: 16px;
 }
 
-/* ============================================================================
-   LOGIN SCREEN
-   ============================================================================ */
-
+/* Login Screen */
 .screen {
     display: none;
 }
@@ -28,135 +25,114 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #ffffff;
+    padding: 20px;
 }
 
 .login-container {
     width: 100%;
-    max-width: 400px;
-    padding: 2rem;
-    text-align: center;
+    max-width: 300px;
 }
 
 .login-container h1 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    font-weight: 300;
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 400;
 }
 
 .login-container input {
     width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border: 1px solid #000;
-    font-size: 1rem;
-    font-family: inherit;
-}
-
-.login-container input:focus {
-    outline: none;
-    border-color: #000;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    font-size: 16px;
 }
 
 .login-container button {
     width: 100%;
-    padding: 0.75rem;
+    padding: 12px;
     background: #000;
     color: #fff;
     border: none;
-    font-size: 1rem;
     cursor: pointer;
-    font-weight: 500;
+    font-size: 16px;
 }
 
-.login-container button:hover {
+.login-container button:active {
     background: #333;
 }
 
-/* ============================================================================
-   APP SCREEN
-   ============================================================================ */
-
+/* App Layout */
 .app-container {
     display: flex;
+    flex-direction: column;
     height: 100vh;
 }
 
 .sidebar {
-    width: 200px;
     background: #f5f5f5;
-    border-right: 1px solid #e0e0e0;
-    padding: 2rem 1rem;
+    border-bottom: 1px solid #ddd;
+    padding: 12px;
     display: flex;
-    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    overflow-x: auto;
 }
 
 .sidebar h2 {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
+    font-size: 16px;
     font-weight: 600;
+    white-space: nowrap;
+    margin-right: 10px;
 }
 
 .sidebar nav {
-    flex: 1;
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    gap: 8px;
+    flex: 1;
 }
 
 .nav-btn {
-    padding: 0.75rem 1rem;
-    background: transparent;
-    border: 1px solid transparent;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid #ddd;
     cursor: pointer;
-    text-align: left;
-    font-size: 0.95rem;
-    transition: all 0.2s;
-}
-
-.nav-btn:hover {
-    background: #e0e0e0;
+    font-size: 14px;
+    white-space: nowrap;
+    border-radius: 3px;
 }
 
 .nav-btn.active {
     background: #000;
     color: #fff;
-    border-radius: 4px;
+    border-color: #000;
 }
 
 .sidebar-actions {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: auto;
+    gap: 8px;
+    margin-left: auto;
 }
 
 .action-btn {
-    padding: 0.5rem 0.75rem;
+    padding: 8px 12px;
     background: #fff;
-    border: 1px solid #000;
+    border: 1px solid #ddd;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.2s;
+    font-size: 13px;
+    white-space: nowrap;
+    border-radius: 3px;
 }
 
-.action-btn:hover {
+.action-btn:active {
     background: #f0f0f0;
 }
 
 .action-btn.logout {
-    background: #f0f0f0;
+    background: #f5f5f5;
 }
 
-.action-btn.logout:hover {
-    background: #e0e0e0;
-}
-
-/* ============================================================================
-   VIEWS
-   ============================================================================ */
-
+/* Views */
 .view {
     display: none;
     flex: 1;
@@ -168,71 +144,63 @@ body {
 }
 
 .view-content {
-    padding: 2rem;
-    max-width: 900px;
+    padding: 16px;
+    max-width: 100%;
 }
 
 .view-content h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    font-weight: 300;
+    font-size: 20px;
+    margin-bottom: 20px;
+    font-weight: 400;
 }
 
-/* ============================================================================
-   FORM ELEMENTS
-   ============================================================================ */
-
+/* Forms */
 .form-group {
-    margin-bottom: 2rem;
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
     font-weight: 600;
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
+    margin-bottom: 8px;
+    font-size: 14px;
 }
 
 .form-group input,
 .form-group textarea {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ccc;
+    padding: 10px;
+    border: 1px solid #ddd;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 16px;
+    border-radius: 3px;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: #000;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+.form-group textarea {
+    min-height: 150px;
+    resize: vertical;
 }
 
 .tag-input-group {
     position: relative;
 }
 
-.tag-input-group input {
-    width: 100%;
-}
-
 .tags-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
+    gap: 8px;
+    margin-top: 10px;
 }
 
 .tag {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0.75rem;
+    gap: 6px;
+    padding: 6px 10px;
     background: #000;
     color: #fff;
-    border-radius: 4px;
-    font-size: 0.9rem;
+    border-radius: 3px;
+    font-size: 13px;
 }
 
 .tag-remove {
@@ -240,13 +208,8 @@ body {
     border: none;
     color: #fff;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 16px;
     padding: 0;
-    margin-left: 0.25rem;
-}
-
-.tag-remove:hover {
-    opacity: 0.8;
 }
 
 .tag-suggestions {
@@ -255,43 +218,34 @@ body {
     left: 0;
     right: 0;
     background: #fff;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-top: none;
-    max-height: 200px;
+    max-height: 150px;
     overflow-y: auto;
     z-index: 10;
 }
 
 .suggestion {
-    padding: 0.5rem 0.75rem;
+    padding: 8px 10px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 13px;
+    border-bottom: 1px solid #eee;
 }
 
 .suggestion:hover {
     background: #f5f5f5;
 }
 
-.markdown-preview {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #f9f9f9;
-    border-left: 4px solid #000;
-    display: none;
-}
-
-/* ============================================================================
-   BUTTONS
-   ============================================================================ */
-
+/* Buttons */
 .btn-primary,
 .btn-danger {
-    padding: 0.75rem 1.5rem;
+    padding: 10px 16px;
     border: none;
     cursor: pointer;
-    font-size: 1rem;
-    margin-right: 0.5rem;
-    transition: all 0.2s;
+    font-size: 14px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border-radius: 3px;
 }
 
 .btn-primary {
@@ -299,73 +253,71 @@ body {
     color: #fff;
 }
 
-.btn-primary:hover {
+.btn-primary:active {
     background: #333;
 }
 
 .btn-danger {
-    background: #f0f0f0;
+    background: #f5f5f5;
     color: #000;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
 }
 
-.btn-danger:hover {
-    background: #e0e0e0;
+.btn-danger:active {
+    background: #eee;
 }
 
-/* ============================================================================
-   CALENDAR
-   ============================================================================ */
-
+/* Calendar */
 .calendar-nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
-    gap: 1rem;
+    margin-bottom: 16px;
+    gap: 8px;
 }
 
 .calendar-nav button {
     background: #000;
     color: #fff;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 8px 12px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 14px;
+    border-radius: 3px;
 }
 
-.calendar-nav button:hover {
+.calendar-nav button:active {
     background: #333;
 }
 
 .calendar-nav h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    min-width: 200px;
+    font-size: 16px;
+    font-weight: 400;
+    flex: 1;
     text-align: center;
 }
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
-    background: #e0e0e0;
-    padding: 1px;
+    gap: 2px;
+    background: #ddd;
+    padding: 2px;
 }
 
 .calendar-day {
     aspect-ratio: 1;
     background: #fff;
-    padding: 0.5rem;
+    padding: 6px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    transition: all 0.2s;
-    min-height: 100px;
+    justify-content: flex-start;
+    min-height: 60px;
+    border: 1px solid #ddd;
 }
 
-.calendar-day:hover {
+.calendar-day:active {
     background: #f5f5f5;
 }
 
@@ -377,145 +329,143 @@ body {
 .calendar-day.empty {
     background: #fafafa;
     cursor: default;
+    border: 1px solid #eee;
 }
 
 .calendar-day-number {
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 12px;
+    margin-bottom: 4px;
 }
 
 .calendar-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem;
-    font-size: 0.7rem;
+    gap: 2px;
+    font-size: 10px;
 }
 
 .calendar-tag {
     background: #000;
     color: #fff;
-    padding: 0.1rem 0.3rem;
+    padding: 2px 4px;
     border-radius: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.calendar-more {
-    font-size: 0.7rem;
-    color: #666;
-}
-
-/* ============================================================================
-   SUMMARY
-   ============================================================================ */
-
+/* Summary */
 .stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 2rem;
-    margin-bottom: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
 }
 
 .stat {
     text-align: center;
+    padding: 16px;
+    background: #f5f5f5;
+    border-radius: 3px;
 }
 
 .stat-value {
-    font-size: 3rem;
+    font-size: 32px;
     font-weight: 300;
-    margin-bottom: 0.5rem;
+    margin-bottom: 8px;
 }
 
 .stat-label {
-    font-size: 0.9rem;
+    font-size: 12px;
     color: #666;
 }
 
 .tag-frequency {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 8px;
 }
 
 .tag-freq {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
+    padding: 10px;
     background: #f5f5f5;
-    border-left: 4px solid #000;
-}
-
-.tag-freq span:first-child {
-    font-weight: 500;
+    border-radius: 3px;
+    font-size: 14px;
 }
 
 .tag-freq .count {
     background: #000;
     color: #fff;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
+    padding: 2px 8px;
+    border-radius: 3px;
     font-weight: 600;
+    font-size: 12px;
 }
 
-/* ============================================================================
-   RESPONSIVE
-   ============================================================================ */
-
-@media (max-width: 768px) {
-    .app-container {
-        flex-direction: column;
-    }
-
+/* Mobile */
+@media (max-width: 600px) {
     .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #e0e0e0;
-        flex-direction: row;
-        padding: 1rem;
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .sidebar h2 {
-        margin-bottom: 0;
-        margin-right: 1rem;
+        margin-right: 0;
     }
 
     .sidebar nav {
-        flex-direction: row;
-        gap: 0.25rem;
+        width: 100%;
+    }
+
+    .sidebar-actions {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .sidebar-actions .action-btn {
         flex: 1;
     }
 
     .nav-btn {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.85rem;
-    }
-
-    .sidebar-actions {
-        flex-direction: row;
-        margin-top: 0;
-    }
-
-    .action-btn {
-        padding: 0.5rem;
-        font-size: 0.8rem;
+        flex: 1;
+        text-align: center;
     }
 
     .view-content {
-        padding: 1rem;
+        padding: 12px;
+    }
+
+    .view-content h2 {
+        font-size: 18px;
     }
 
     .calendar-day {
-        min-height: 80px;
+        min-height: 50px;
+    }
+
+    .calendar-day-number {
+        font-size: 11px;
+    }
+
+    .calendar-tag {
+        font-size: 9px;
     }
 
     .stats {
-        gap: 1rem;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
     }
 
     .stat-value {
-        font-size: 2rem;
+        font-size: 28px;
+    }
+
+    .btn-primary,
+    .btn-danger {
+        width: 100%;
+        margin-right: 0;
     }
 }
