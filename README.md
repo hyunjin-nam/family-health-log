@@ -14,7 +14,7 @@ python -m http.server 8000
 **Option 2: Deploy to GitHub Pages (3 min)**
 ```bash
 git add .
-git commit -m "Add pregnancy journal"
+git commit -m "Add family health log"
 git push origin main
 ```
 Then: Settings → Pages → Deploy from a branch (main) → Save
