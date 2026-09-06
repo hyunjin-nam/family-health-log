@@ -1,3 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap');
+
+:root {
+    --bg: #faf8f4;
+    --surface: #ffffff;
+    --ink: #2b2a28;
+    --ink-soft: #78746c;
+    --border: #e3ded2;
+    --accent: #4a6c6f;
+    --accent-dark: #3a5457;
+    --accent-soft: #e7edec;
+    --danger: #b5573f;
+    --danger-soft: #f5e9e5;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --font-serif: 'Fraunces', Georgia, serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -15,10 +34,24 @@ html, body {
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #fff;
-    color: #000;
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--ink);
     font-size: 16px;
+    line-height: 1.5;
+}
+
+input, textarea, button {
+    font-family: inherit;
+    color: inherit;
+}
+
+button {
+    font-family: var(--font-sans);
+}
+
+::selection {
+    background: var(--accent-soft);
 }
 
 /* Login Screen */
@@ -27,12 +60,11 @@ body {
     position: fixed;
     inset: 0;
     height: 100vh;
-    height: 100dvh; /* accounts for mobile browser toolbars */
-    background: #fff;
+    background: var(--bg);
     z-index: 1000;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 24px;
 }
 
 #login-screen.active {
@@ -44,8 +76,7 @@ body {
     position: fixed;
     inset: 0;
     height: 100vh;
-    height: 100dvh;
-    background: #fff;
+    background: var(--bg);
     z-index: 1;
 }
 
@@ -55,36 +86,48 @@ body {
 
 .login-container {
     width: 100%;
-    max-width: 300px;
+    max-width: 320px;
 }
 
 .login-container h1 {
-    font-size: 24px;
-    margin-bottom: 30px;
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 500;
+    margin-bottom: 36px;
     text-align: center;
-    font-weight: 400;
+    color: var(--ink);
 }
 
 .login-container input {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
+    padding: 13px 14px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
     font-size: 16px;
+}
+
+.login-container input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .login-container button {
     width: 100%;
-    padding: 12px;
-    background: #000;
+    padding: 13px;
+    background: var(--accent);
     color: #fff;
     border: none;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     font-size: 16px;
+    font-weight: 500;
 }
 
 .login-container button:active {
-    background: #333;
+    background: var(--accent-dark);
 }
 
 /* App Layout */
@@ -96,43 +139,48 @@ body {
 }
 
 .sidebar {
-    background: #f5f5f5;
-    border-bottom: 1px solid #ddd;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
     padding: 12px;
     display: flex;
     gap: 8px;
     align-items: center;
     overflow-x: auto;
+    flex-shrink: 0;
 }
 
 .sidebar h2 {
-    font-size: 16px;
-    font-weight: 600;
+    font-family: var(--font-serif);
+    font-size: 17px;
+    font-weight: 500;
     white-space: nowrap;
-    margin-right: 10px;
+    margin-right: 12px;
+    color: var(--ink);
 }
 
 .sidebar nav {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex: 1;
 }
 
 .nav-btn {
     padding: 10px 14px;
     min-height: 44px;
-    background: #fff;
-    border: 1px solid #ddd;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--border);
     cursor: pointer;
     font-size: 14px;
     white-space: nowrap;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .nav-btn.active {
-    background: #000;
+    background: var(--accent);
     color: #fff;
-    border-color: #000;
+    border-color: var(--accent);
 }
 
 .sidebar-actions {
@@ -144,20 +192,17 @@ body {
 .action-btn {
     padding: 10px 14px;
     min-height: 44px;
-    background: #fff;
-    border: 1px solid #ddd;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--border);
     cursor: pointer;
     font-size: 13px;
     white-space: nowrap;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
 }
 
 .action-btn:active {
-    background: #f0f0f0;
-}
-
-.action-btn.logout {
-    background: #f5f5f5;
+    background: var(--accent-soft);
 }
 
 /* Views */
@@ -165,6 +210,7 @@ body {
     display: none;
     flex: 1;
     overflow-y: auto;
+    min-height: 0;
 }
 
 .view.active {
@@ -172,41 +218,54 @@ body {
 }
 
 .view-content {
-    padding: 16px;
+    padding: 24px 20px 40px;
     max-width: 100%;
 }
 
 .view-content h2 {
-    font-size: 20px;
-    margin-bottom: 20px;
-    font-weight: 400;
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    color: var(--ink);
 }
 
 /* Forms */
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 }
 
 .form-group label {
     display: block;
     font-weight: 600;
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-transform: none;
 }
 
 .form-group input,
 .form-group textarea {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
+    padding: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
     font-family: inherit;
     font-size: 16px;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .form-group textarea {
-    min-height: 150px;
+    min-height: 220px;
     resize: vertical;
+    line-height: 1.6;
 }
 
 .tag-input-group {
@@ -225,9 +284,9 @@ body {
     align-items: center;
     gap: 6px;
     padding: 6px 10px;
-    background: #000;
+    background: var(--accent);
     color: #fff;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     font-size: 13px;
 }
 
@@ -238,61 +297,74 @@ body {
     cursor: pointer;
     font-size: 16px;
     padding: 0;
+    line-height: 1;
+    opacity: 0.85;
+}
+
+.tag-remove:active {
+    opacity: 1;
 }
 
 .tag-suggestions {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 4px);
     left: 0;
     right: 0;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-top: none;
-    max-height: 150px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    max-height: 160px;
     overflow-y: auto;
     z-index: 10;
+    box-shadow: 0 4px 16px rgba(43, 42, 40, 0.08);
 }
 
 .suggestion {
-    padding: 8px 10px;
+    padding: 10px 12px;
     cursor: pointer;
     font-size: 13px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border);
+}
+
+.suggestion:last-child {
+    border-bottom: none;
 }
 
 .suggestion:hover {
-    background: #f5f5f5;
+    background: var(--accent-soft);
 }
 
 /* Buttons */
 .btn-primary,
 .btn-danger {
-    padding: 10px 16px;
+    padding: 12px 18px;
+    min-height: 44px;
     border: none;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 500;
     margin-right: 8px;
-    margin-bottom: 8px;
-    border-radius: 3px;
+    margin-top: 4px;
+    border-radius: var(--radius-sm);
 }
 
 .btn-primary {
-    background: #000;
+    background: var(--accent);
     color: #fff;
 }
 
 .btn-primary:active {
-    background: #333;
+    background: var(--accent-dark);
 }
 
 .btn-danger {
-    background: #f5f5f5;
-    color: #000;
-    border: 1px solid #ddd;
+    background: var(--danger-soft);
+    color: var(--danger);
+    border: 1px solid transparent;
 }
 
 .btn-danger:active {
-    background: #eee;
+    background: #ecd8d1;
 }
 
 /* Calendar */
@@ -300,27 +372,29 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     gap: 8px;
 }
 
 .calendar-nav button {
-    background: #000;
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    min-height: 40px;
     cursor: pointer;
     font-size: 14px;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
 }
 
 .calendar-nav button:active {
-    background: #333;
+    background: var(--accent-soft);
 }
 
 .calendar-nav h3 {
-    font-size: 16px;
-    font-weight: 400;
+    font-family: var(--font-serif);
+    font-size: 17px;
+    font-weight: 500;
     flex: 1;
     text-align: center;
 }
@@ -328,42 +402,43 @@ body {
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
-    background: #ddd;
-    padding: 2px;
+    gap: 1px;
+    background: var(--border);
+    padding: 1px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
 }
 
 .calendar-day {
     aspect-ratio: 1;
-    background: #fff;
+    background: var(--surface);
     padding: 6px;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     min-height: 60px;
-    border: 1px solid #ddd;
 }
 
 .calendar-day:active {
-    background: #f5f5f5;
+    background: var(--accent-soft);
 }
 
 .calendar-day.has-entry {
-    background: #f9f9f9;
-    border: 2px solid #000;
+    background: var(--accent-soft);
+    box-shadow: inset 0 0 0 2px var(--accent);
 }
 
 .calendar-day.empty {
-    background: #fafafa;
+    background: var(--bg);
     cursor: default;
-    border: 1px solid #eee;
 }
 
 .calendar-day-number {
     font-weight: 600;
     font-size: 12px;
     margin-bottom: 4px;
+    color: var(--ink-soft);
 }
 
 .calendar-tags {
@@ -374,9 +449,9 @@ body {
 }
 
 .calendar-tag {
-    background: #000;
+    background: var(--accent);
     color: #fff;
-    padding: 2px 4px;
+    padding: 2px 5px;
     border-radius: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -387,92 +462,45 @@ body {
 .entries-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
 }
 
 .entry-item {
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    background: #fafafa;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
 }
 
 .entry-date {
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 8px;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: var(--ink);
 }
 
 .entry-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .entry-tag {
     display: inline-block;
-    padding: 4px 8px;
-    background: #000;
-    color: #fff;
+    padding: 4px 9px;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
     font-size: 12px;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
 }
 
 .entry-text {
-    font-size: 13px;
-    line-height: 1.5;
-    color: #333;
-}
-
-/* Summary */
-.stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
-.stat {
-    text-align: center;
-    padding: 16px;
-    background: #f5f5f5;
-    border-radius: 3px;
-}
-
-.stat-value {
-    font-size: 32px;
-    font-weight: 300;
-    margin-bottom: 8px;
-}
-
-.stat-label {
-    font-size: 12px;
-    color: #666;
-}
-
-.tag-frequency {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.tag-freq {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    background: #f5f5f5;
-    border-radius: 3px;
     font-size: 14px;
-}
-
-.tag-freq .count {
-    background: #000;
-    color: #fff;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-weight: 600;
-    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
 }
 
 /* Tablet & Desktop */
@@ -485,30 +513,37 @@ body {
         flex-direction: column;
         align-items: stretch;
         justify-content: flex-start;
-        width: 220px;
+        width: 224px;
         flex-shrink: 0;
         height: 100%;
         border-bottom: none;
-        border-right: 1px solid #ddd;
-        padding: 20px 16px;
+        border-right: 1px solid var(--border);
+        padding: 24px 16px;
         overflow-x: visible;
+        gap: 0;
     }
 
     .sidebar h2 {
-        font-size: 17px;
+        font-size: 19px;
         margin-right: 0;
-        margin-bottom: 24px;
+        margin-bottom: 28px;
         line-height: 1.3;
+        padding: 0 4px;
     }
 
     .sidebar nav {
         flex-direction: column;
         flex: 1;
-        gap: 6px;
+        gap: 4px;
     }
 
     .nav-btn {
         text-align: left;
+        border-color: transparent;
+    }
+
+    .nav-btn:not(.active):active {
+        background: var(--accent-soft);
     }
 
     .sidebar-actions {
@@ -519,11 +554,7 @@ body {
     .view-content {
         max-width: 680px;
         margin: 0 auto;
-        padding: 40px 32px;
-    }
-
-    .stats {
-        grid-template-columns: repeat(4, 1fr);
+        padding: 48px 32px 64px;
     }
 }
 
@@ -532,6 +563,7 @@ body {
     .sidebar {
         flex-direction: column;
         align-items: stretch;
+        gap: 10px;
     }
 
     .sidebar h2 {
@@ -557,11 +589,11 @@ body {
     }
 
     .view-content {
-        padding: 12px;
+        padding: 20px 16px 36px;
     }
 
     .view-content h2 {
-        font-size: 18px;
+        font-size: 19px;
     }
 
     .calendar-day {
@@ -574,15 +606,6 @@ body {
 
     .calendar-tag {
         font-size: 9px;
-    }
-
-    .stats {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-    }
-
-    .stat-value {
-        font-size: 28px;
     }
 
     .btn-primary,
