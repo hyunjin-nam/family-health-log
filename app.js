@@ -12,21 +12,29 @@ let currentMonth = new Date();
 document.addEventListener('DOMContentLoaded', () => {
     checkLogin();
     setDefaultDate();
-    
-    // Pre-fill with template
-    const template = `## Symptoms
+
+    document.getElementById('entry-text').addEventListener('input', updateMarkdownPreview);
+    updateMarkdownPreview();
+});
+
+const ENTRY_TEMPLATE = `## Symptoms
 -
 
 ## Activity
 - Exercise:
-- Intensity
+- Intensity:
 
 ## Notes
 -`;
-    document.getElementById('entry-text').value = template;
-    document.getElementById('entry-text').addEventListener('input', updateMarkdownPreview);
+
+function loadTemplate() {
+    const textarea = document.getElementById('entry-text');
+    if (textarea.value.trim() && !confirm('Replace current notes with the template?')) {
+        return;
+    }
+    textarea.value = ENTRY_TEMPLATE;
     updateMarkdownPreview();
-});
+}
 
 // ============================================================================
 // LOGIN / LOGOUT
@@ -195,8 +203,8 @@ async function saveEntry() {
     // Commit any pending tag
     commitPendingTag();
     
-    if (!date || !text.trim()) {
-        alert('Please fill in date and notes');
+    if (!date) {
+        alert('Please select a date');
         return;
     }
 
@@ -211,6 +219,7 @@ async function saveEntry() {
         tags: currentTags,
         text,
         supplements,
+        period: document.getElementById('period').checked,
         tryingToConceive: document.getElementById('trying-to-conceive').checked,
         updatedAt: new Date().toISOString()
     };
@@ -263,26 +272,18 @@ async function loadEntry(date) {
         document.getElementById('supplement-folate').checked = supplements.folate || false;
         document.getElementById('supplement-inderal5').checked = supplements.inderal5 || false;
         document.getElementById('supplement-inderal10').checked = supplements.inderal10 || false;
+        document.getElementById('period').checked = entry.period || false;
         document.getElementById('trying-to-conceive').checked = entry.tryingToConceive || false;
     } else {
         document.getElementById('entry-date').value = date;
-        // Auto-fill template for new entries
-        const template = `## Symptoms
--
-
-## Activity
-- Exercise:
-- Intensity
-
-## Notes
--`;
-        document.getElementById('entry-text').value = template;
+        document.getElementById('entry-text').value = '';
         currentTags = [];
         renderTags();
         
         document.getElementById('supplement-folate').checked = false;
         document.getElementById('supplement-inderal5').checked = false;
         document.getElementById('supplement-inderal10').checked = false;
+        document.getElementById('period').checked = false;
         document.getElementById('trying-to-conceive').checked = false;
     }
     updateMarkdownPreview();
@@ -295,21 +296,13 @@ function loadEntryForEdit(date) {
 
 function clearForm() {
     setDefaultDate();
-    const template = `## Symptoms
--
-
-## Activity
-- Exercise:
-- Intensity
-
-## Notes
--`;
-    document.getElementById('entry-text').value = template;
+    document.getElementById('entry-text').value = '';
     currentTags = [];
     renderTags();
     document.getElementById('supplement-folate').checked = false;
     document.getElementById('supplement-inderal5').checked = false;
     document.getElementById('supplement-inderal10').checked = false;
+    document.getElementById('period').checked = false;
     document.getElementById('trying-to-conceive').checked = false;
     updateMarkdownPreview();
 }
@@ -400,6 +393,82 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================================================
+// CYCLE PREDICTION (fertile window / next expected period)
+// ============================================================================
+
+const DEFAULT_CYCLE_LENGTH = 28;
+const DEFAULT_PERIOD_LENGTH = 5;
+const LUTEAL_PHASE_LENGTH = 14; // days between ovulation and next period, fairly constant
+
+function parseDateOnly(dateStr) {
+    return new Date(`${dateStr}T00:00:00`);
+}
+
+function formatDateOnly(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function addDays(date, n) {
+    const d = new Date(date);
+    d.setDate(d.getDate() + n);
+    return d;
+}
+
+// Group consecutive logged period days into { start, length } runs, so a
+// multi-day period only counts once when averaging cycle length.
+function getPeriodGroups() {
+    const periodDates = Object.keys(allEntries).filter(d => allEntries[d].period).sort();
+    const dateSet = new Set(periodDates);
+    const groups = [];
+
+    for (const d of periodDates) {
+        const prevStr = formatDateOnly(addDays(parseDateOnly(d), -1));
+        if (dateSet.has(prevStr)) continue; // not a run start
+
+        let length = 1;
+        let cursor = d;
+        while (dateSet.has(formatDateOnly(addDays(parseDateOnly(cursor), 1)))) {
+            cursor = formatDateOnly(addDays(parseDateOnly(cursor), 1));
+            length++;
+        }
+        groups.push({ start: d, length });
+    }
+    return groups;
+}
+
+// Predicts the next period's days and the fertile window leading up to it,
+// based on past logged period entries. Returns null if nothing is logged yet.
+function getCyclePrediction() {
+    const groups = getPeriodGroups();
+    if (groups.length === 0) return null;
+
+    let cycleLength = DEFAULT_CYCLE_LENGTH;
+    if (groups.length >= 2) {
+        const diffs = [];
+        for (let i = 1; i < groups.length; i++) {
+            const days = Math.round((parseDateOnly(groups[i].start) - parseDateOnly(groups[i - 1].start)) / 86400000);
+            diffs.push(days);
+        }
+        const avg = diffs.reduce((a, b) => a + b, 0) / diffs.length;
+        cycleLength = Math.min(45, Math.max(18, Math.round(avg)));
+    }
+
+    const avgDuration = Math.round(groups.reduce((a, g) => a + g.length, 0) / groups.length) || DEFAULT_PERIOD_LENGTH;
+
+    const lastStart = parseDateOnly(groups[groups.length - 1].start);
+    const nextPeriodStart = addDays(lastStart, cycleLength);
+
+    const periodDays = new Set();
+    for (let i = 0; i < avgDuration; i++) periodDays.add(formatDateOnly(addDays(nextPeriodStart, i)));
+
+    const ovulationDay = addDays(nextPeriodStart, -LUTEAL_PHASE_LENGTH);
+    const fertileDays = new Set();
+    for (let i = -5; i <= 1; i++) fertileDays.add(formatDateOnly(addDays(ovulationDay, i)));
+
+    return { periodDays, fertileDays };
+}
+
+// ============================================================================
 // CALENDAR VIEW
 // ============================================================================
 
@@ -414,32 +483,46 @@ function renderCalendar() {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     
     let html = '';
-    
+
     for (let i = 0; i < firstDay; i++) {
         html += '<div class="calendar-day empty"></div>';
     }
-    
+
+    const prediction = getCyclePrediction();
+
     for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const entry = allEntries[dateStr];
         const tags = entry ? entry.tags || [] : [];
         const tagsHtml = tags.slice(0, 2).map(t => `<span class="calendar-tag">${t}</span>`).join('');
         const moreCount = tags.length > 2 ? `<span class="calendar-more">+${tags.length - 2}</span>` : '';
+        const periodTag = (entry && entry.period) ? '<span class="calendar-tag calendar-tag-period">Period</span>' : '';
         const hasEntry = entry ? 'has-entry' : '';
         const folateCheckmark = (entry && entry.supplements && entry.supplements.folate) ? '<span class="calendar-checkmark">✓</span>' : '';
         const tryingHeart = (entry && entry.tryingToConceive) ? '<span class="calendar-heart">♡</span>' : '';
-        
+
+        // Cycle shading applies regardless of whether the day already has a
+        // logged entry, so a fertile/period day you also wrote in shows
+        // both the "has data" outline and the shade. An actual logged
+        // period day is shaded the same red as a predicted one.
+        let cycleClass = '';
+        if ((entry && entry.period) || (prediction && prediction.periodDays.has(dateStr))) {
+            cycleClass = 'period-day';
+        } else if (prediction && prediction.fertileDays.has(dateStr)) {
+            cycleClass = 'fertile-day';
+        }
+
         html += `
-            <div class="calendar-day ${hasEntry}" onclick="loadEntry('${dateStr}'); showView('write')">
+            <div class="calendar-day ${hasEntry} ${cycleClass}" onclick="loadEntry('${dateStr}'); showView('write')">
                 <div class="calendar-day-header">
                     <div class="calendar-day-number">${day}</div>
                     <div class="calendar-indicators">${folateCheckmark}${tryingHeart}</div>
                 </div>
-                <div class="calendar-tags">${tagsHtml}${moreCount}</div>
+                <div class="calendar-tags">${periodTag}${tagsHtml}${moreCount}</div>
             </div>
         `;
     }
-    
+
     document.getElementById('calendar-grid').innerHTML = html;
 }
 
@@ -480,6 +563,7 @@ function updateSummary() {
                         ${supplements.folate ? '<span class="supplement-taken">✓ Folate</span>' : ''}
                         ${supplements.inderal5 ? '<span class="supplement-taken">✓ Inderal 5mg</span>' : ''}
                         ${supplements.inderal10 ? '<span class="supplement-taken">✓ Inderal 10mg</span>' : ''}
+                        ${entry.period ? '<span class="period-badge">Period</span>' : ''}
                         ${entry.tryingToConceive ? '<span class="trying-badge">Sexual Activity</span>' : ''}
                     </div>
                 </div>
