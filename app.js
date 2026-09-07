@@ -294,6 +294,11 @@ function loadEntryForEdit(date) {
     showView('write');
 }
 
+function startNewEntry() {
+    clearForm();
+    showView('write');
+}
+
 function clearForm() {
     setDefaultDate();
     document.getElementById('entry-text').value = '';
@@ -396,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // CYCLE PREDICTION (fertile window / next expected period)
 // ============================================================================
 
-const DEFAULT_CYCLE_LENGTH = 28;
+const DEFAULT_CYCLE_LENGTH = 30;
 const DEFAULT_PERIOD_LENGTH = 5;
 const LUTEAL_PHASE_LENGTH = 14; // days between ovulation and next period, fairly constant
 
@@ -475,13 +480,15 @@ function getCyclePrediction() {
 function renderCalendar() {
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth();
-    
+
     const monthName = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     document.getElementById('calendar-month').textContent = monthName;
     
-    const firstDay = new Date(year, month, 1).getDay();
+    // getDay() is 0=Sunday..6=Saturday; shift so the week starts on Monday
+    // (0=Monday..6=Sunday) when deciding how many leading blanks to draw.
+    const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
+
     let html = '';
 
     for (let i = 0; i < firstDay; i++) {
@@ -493,10 +500,15 @@ function renderCalendar() {
     for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const entry = allEntries[dateStr];
+        const entryPeriod = !!(entry && entry.period);
         const tags = entry ? entry.tags || [] : [];
-        const tagsHtml = tags.slice(0, 2).map(t => `<span class="calendar-tag">${t}</span>`).join('');
-        const moreCount = tags.length > 2 ? `<span class="calendar-more">+${tags.length - 2}</span>` : '';
-        const periodTag = (entry && entry.period) ? '<span class="calendar-tag calendar-tag-period">Period</span>' : '';
+        // Cap total pills (Period badge + tags + "+N more") at 3 so every
+        // cell fits the same fixed height without clipping: one fewer tag
+        // slot is shown when the Period badge is already taking one.
+        const tagSlots = entryPeriod ? 1 : 2;
+        const tagsHtml = tags.slice(0, tagSlots).map(t => `<span class="calendar-tag">${t}</span>`).join('');
+        const moreCount = tags.length > tagSlots ? `<span class="calendar-more">+${tags.length - tagSlots}</span>` : '';
+        const periodTag = entryPeriod ? '<span class="calendar-tag calendar-tag-period">Period</span>' : '';
         const hasEntry = entry ? 'has-entry' : '';
         const folateCheckmark = (entry && entry.supplements && entry.supplements.folate) ? '<span class="calendar-checkmark">✓</span>' : '';
         const tryingHeart = (entry && entry.tryingToConceive) ? '<span class="calendar-heart">♡</span>' : '';

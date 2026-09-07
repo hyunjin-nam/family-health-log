@@ -208,6 +208,33 @@ input, textarea, button, select { font-family: inherit; color: inherit; }
     letter-spacing: -0.01em;
 }
 
+.view-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.view-header .view-title { margin-bottom: 0; }
+
+.write-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+.write-btn:hover { background: var(--accent-dark); }
+.write-btn svg { width: 13px; height: 13px; }
+
 /* ── Form ────────────────────────────────────────── */
 .form-group { margin-bottom: 20px; }
 
@@ -462,7 +489,8 @@ input, textarea, button, select { font-family: inherit; color: inherit; }
     border-radius: var(--radius-sm);
     padding: 6px;
     cursor: pointer;
-    min-height: 58px;
+    height: 78px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     transition: border-color 0.12s, background 0.12s;
@@ -689,6 +717,6 @@ input, textarea, button, select { font-family: inherit; color: inherit; }
     .btn-primary, .btn-danger { width: 100%; }
     .btn-row { flex-direction: column; }
 
-    .calendar-day { min-height: 44px; }
+    .calendar-day { height: 96px; }
     .calendar-day-number { font-size: 11px; }
 }
