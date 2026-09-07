@@ -12,6 +12,18 @@ let currentMonth = new Date();
 document.addEventListener('DOMContentLoaded', () => {
     checkLogin();
     setDefaultDate();
+    
+    // Pre-fill with template
+    const template = `## Symptoms
+-
+
+## Activity
+- Exercise:
+- Intensity
+
+## Notes
+-`;
+    document.getElementById('entry-text').value = template;
     document.getElementById('entry-text').addEventListener('input', updateMarkdownPreview);
     updateMarkdownPreview();
 });
@@ -106,6 +118,7 @@ function renderMarkdown(text) {
     for (const rawLine of lines) {
         const line = rawLine.trimEnd();
         const heading = line.match(/^(#{1,4})\s+(.*)$/);
+        const checkbox = line.match(/^-\s+\[([ xX])\]\s+(.*)$/);
         const bullet = line.match(/^[-*]\s+(.*)$/);
         const numbered = line.match(/^\d+\.\s+(.*)$/);
         const quote = line.match(/^>\s?(.*)$/);
@@ -115,6 +128,12 @@ function renderMarkdown(text) {
             closeList();
             const level = heading[1].length;
             html.push(`<h${level}>${parseInline(heading[2])}</h${level}>`);
+        } else if (checkbox) {
+            flushParagraph();
+            if (listType !== 'ul') { closeList(); html.push('<ul>'); listType = 'ul'; }
+            const checked = checkbox[1].toLowerCase() === 'x';
+            const checkedClass = checked ? ' class="checked"' : '';
+            html.push(`<li${checkedClass}><input type="checkbox" disabled ${checked ? 'checked' : ''} /> ${parseInline(checkbox[2])}</li>`);
         } else if (bullet) {
             flushParagraph();
             if (listType !== 'ul') { closeList(); html.push('<ul>'); listType = 'ul'; }
@@ -181,10 +200,18 @@ async function saveEntry() {
         return;
     }
 
+    const supplements = {
+        folate: document.getElementById('supplement-folate').checked,
+        inderal5: document.getElementById('supplement-inderal5').checked,
+        inderal10: document.getElementById('supplement-inderal10').checked
+    };
+
     const entry = {
         date,
         tags: currentTags,
         text,
+        supplements,
+        tryingToConceive: document.getElementById('trying-to-conceive').checked,
         updatedAt: new Date().toISOString()
     };
 
@@ -231,20 +258,59 @@ async function loadEntry(date) {
         document.getElementById('entry-text').value = entry.text || '';
         currentTags = entry.tags || [];
         renderTags();
+        
+        const supplements = entry.supplements || {};
+        document.getElementById('supplement-folate').checked = supplements.folate || false;
+        document.getElementById('supplement-inderal5').checked = supplements.inderal5 || false;
+        document.getElementById('supplement-inderal10').checked = supplements.inderal10 || false;
+        document.getElementById('trying-to-conceive').checked = entry.tryingToConceive || false;
     } else {
         document.getElementById('entry-date').value = date;
-        document.getElementById('entry-text').value = '';
+        // Auto-fill template for new entries
+        const template = `## Symptoms
+-
+
+## Activity
+- Exercise:
+- Intensity
+
+## Notes
+-`;
+        document.getElementById('entry-text').value = template;
         currentTags = [];
         renderTags();
+        
+        document.getElementById('supplement-folate').checked = false;
+        document.getElementById('supplement-inderal5').checked = false;
+        document.getElementById('supplement-inderal10').checked = false;
+        document.getElementById('trying-to-conceive').checked = false;
     }
     updateMarkdownPreview();
 }
 
+function loadEntryForEdit(date) {
+    loadEntry(date);
+    showView('write');
+}
+
 function clearForm() {
     setDefaultDate();
-    document.getElementById('entry-text').value = '';
+    const template = `## Symptoms
+-
+
+## Activity
+- Exercise:
+- Intensity
+
+## Notes
+-`;
+    document.getElementById('entry-text').value = template;
     currentTags = [];
     renderTags();
+    document.getElementById('supplement-folate').checked = false;
+    document.getElementById('supplement-inderal5').checked = false;
+    document.getElementById('supplement-inderal10').checked = false;
+    document.getElementById('trying-to-conceive').checked = false;
     updateMarkdownPreview();
 }
 
@@ -360,10 +426,15 @@ function renderCalendar() {
         const tagsHtml = tags.slice(0, 2).map(t => `<span class="calendar-tag">${t}</span>`).join('');
         const moreCount = tags.length > 2 ? `<span class="calendar-more">+${tags.length - 2}</span>` : '';
         const hasEntry = entry ? 'has-entry' : '';
+        const folateCheckmark = (entry && entry.supplements && entry.supplements.folate) ? '<span class="calendar-checkmark">✓</span>' : '';
+        const tryingHeart = (entry && entry.tryingToConceive) ? '<span class="calendar-heart">♡</span>' : '';
         
         html += `
             <div class="calendar-day ${hasEntry}" onclick="loadEntry('${dateStr}'); showView('write')">
-                <div class="calendar-day-number">${day}</div>
+                <div class="calendar-day-header">
+                    <div class="calendar-day-number">${day}</div>
+                    <div class="calendar-indicators">${folateCheckmark}${tryingHeart}</div>
+                </div>
                 <div class="calendar-tags">${tagsHtml}${moreCount}</div>
             </div>
         `;
@@ -398,17 +469,34 @@ function updateSummary() {
         const entry = allEntries[date];
         const tags = (entry.tags || []).map(tag => `<span class="entry-tag">${tag}</span>`).join('');
         const rendered = renderMarkdown(entry.text || '');
-        
+        const supplements = entry.supplements || {};
+
         return `
-            <div class="entry-item">
-                <div class="entry-date">${date}</div>
-                <div class="entry-tags">${tags}</div>
+            <div class="entry-item entry-item-clickable" data-date="${date}">
+                <div class="entry-header">
+                    <div class="entry-date">${date}</div>
+                    <div class="entry-badges">
+                        ${tags}
+                        ${supplements.folate ? '<span class="supplement-taken">✓ Folate</span>' : ''}
+                        ${supplements.inderal5 ? '<span class="supplement-taken">✓ Inderal 5mg</span>' : ''}
+                        ${supplements.inderal10 ? '<span class="supplement-taken">✓ Inderal 10mg</span>' : ''}
+                        ${entry.tryingToConceive ? '<span class="trying-badge">Sexual Activity</span>' : ''}
+                    </div>
+                </div>
                 <div class="entry-text markdown-body">${rendered}</div>
             </div>
         `;
     }).join('');
     
     document.getElementById('entries-list').innerHTML = html;
+    
+    // Attach click handlers to all entry items
+    document.querySelectorAll('.entry-item-clickable').forEach(item => {
+        item.addEventListener('click', () => {
+            const date = item.getAttribute('data-date');
+            loadEntryForEdit(date);
+        });
+    });
 }
 
 function calculateStreak() {

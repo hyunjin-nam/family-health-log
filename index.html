@@ -7,122 +7,137 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="login-screen" class="active">
-        <div class="login-container">
-            <h1>Family Health Log</h1>
-            <input 
-                type="password" 
-                id="password-input" 
-                placeholder="Enter password" 
-                autocomplete="off"
-            >
-            <button onclick="login()">Login</button>
-        </div>
+
+<div id="login-screen" class="active">
+    <div class="login-container">
+        <div class="login-logo">♥</div>
+        <h1>Family Health Log</h1>
+        <p>Enter your password to continue</p>
+        <input type="password" id="password-input" placeholder="Password" autocomplete="off">
+        <button onclick="login()">Sign in</button>
     </div>
+</div>
 
-    <div id="app-screen">
-        <div class="app-container">
-            <!-- Sidebar Navigation -->
-            <div class="sidebar">
-                <h2>Family Health Log</h2>
-                <nav>
-                    <button class="nav-btn active" onclick="showView('write')">Write</button>
-                    <button class="nav-btn" onclick="showView('calendar')">Calendar</button>
-                    <button class="nav-btn" onclick="showView('summary')">Summary</button>
-                </nav>
-                <div class="sidebar-actions">
-                    <button onclick="logout()" class="action-btn logout">Logout</button>
-                </div>
+<div id="app-screen">
+    <div class="app-container">
+
+        <div class="sidebar">
+            <h2>Family Health Log</h2>
+            <nav>
+                <button class="nav-btn active" onclick="showView('write')">Write</button>
+                <button class="nav-btn" onclick="showView('calendar')">Calendar</button>
+                <button class="nav-btn" onclick="showView('summary')">Summary</button>
+            </nav>
+            <div class="sidebar-actions">
+                <button onclick="logout()" class="action-btn">Sign out</button>
             </div>
+        </div>
 
-            <!-- Write View -->
-            <div id="write-view" class="view active">
-                <div class="view-content">
-                    <h2>Today's Entry</h2>
-                    
-                    <div class="form-group">
-                        <label>Date</label>
-                        <input type="date" id="entry-date">
-                    </div>
+        <!-- Write View -->
+        <div id="write-view" class="view active">
+            <div class="view-content">
+                <div class="view-title">Today's Entry</div>
 
-                    <div class="form-group">
-                        <label>Tags</label>
-                        <div class="tag-input-group">
-                            <input 
-                                type="text" 
-                                id="tag-input" 
-                                placeholder="Type tag, press Enter or comma"
-                                onkeydown="handleTagInput(event)"
-                                onblur="commitPendingTag()"
-                            >
-                        </div>
-                        <div id="current-tags" class="tags-list"></div>
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" id="entry-date">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tags</label>
+                    <div class="tag-input-group">
+                        <input type="text" id="tag-input"
+                            placeholder="Type tag, press Enter or comma"
+                            onkeydown="handleTagInput(event)"
+                            onblur="commitPendingTag()">
                         <div id="tag-suggestions" class="tag-suggestions"></div>
                     </div>
+                    <div id="current-tags" class="tags-list"></div>
+                </div>
 
-                    <div class="form-group">
-                        <label>Notes</label>
-                        <textarea 
-                            id="entry-text" 
-                            placeholder="Write your thoughts... (supports markdown: # heading, **bold**, - list)"
-                            rows="15"
-                        ></textarea>
-                        <div class="preview-label">Preview</div>
-                        <div id="markdown-preview" class="markdown-preview markdown-body"></div>
+                <div class="form-group">
+                    <label class="form-label">Daily Supplement</label>
+                    <div class="check-grid">
+                        <label class="check-pill">
+                            <input type="checkbox" id="supplement-folate">
+                            <span>Folate</span>
+                        </label>
+                        <label class="check-pill">
+                            <input type="checkbox" id="supplement-inderal5">
+                            <span>Inderal 5mg</span>
+                        </label>
+                        <label class="check-pill">
+                            <input type="checkbox" id="supplement-inderal10">
+                            <span>Inderal 10mg</span>
+                        </label>
                     </div>
+                </div>
 
-                    <button onclick="saveEntry()" class="btn-primary">Save Entry</button>
+                <div class="form-group">
+                    <label class="form-label">Sexual Activity</label>
+                    <div class="check-grid">
+                        <label class="check-pill">
+                            <input type="checkbox" id="trying-to-conceive">
+                            <span>Yes</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes</label>
+                    <textarea id="entry-text"
+                        placeholder="Write your thoughts… (supports # heading, **bold**, - list, - [ ] checkbox)"></textarea>
+                    <div class="preview-label">Preview</div>
+                    <div id="markdown-preview" class="markdown-preview markdown-body"></div>
+                </div>
+
+                <div class="btn-row">
+                    <button onclick="saveEntry()" class="btn-primary">Save entry</button>
                     <button onclick="deleteEntry()" class="btn-danger">Delete</button>
                 </div>
             </div>
+        </div>
 
-            <!-- Calendar View -->
-            <div id="calendar-view" class="view">
-                <div class="view-content">
-                    <h2>Calendar</h2>
-                    <div class="calendar-nav">
-                        <button onclick="previousMonth()">←</button>
-                        <h3 id="calendar-month"></h3>
-                        <button onclick="nextMonth()">→</button>
-                    </div>
-                    <div id="calendar-grid" class="calendar-grid"></div>
+        <!-- Calendar View -->
+        <div id="calendar-view" class="view">
+            <div class="view-content">
+                <div class="view-title">Calendar</div>
+                <div class="calendar-nav">
+                    <button class="cal-nav-btn" onclick="previousMonth()">←</button>
+                    <h3 id="calendar-month"></h3>
+                    <button class="cal-nav-btn" onclick="nextMonth()">→</button>
                 </div>
-            </div>
-
-            <!-- Summary View -->
-            <div id="summary-view" class="view">
-                <div class="view-content">
-                    <h2>All Entries</h2>
-                    <div id="entries-list" class="entries-list"></div>
-                </div>
+                <div id="calendar-grid" class="calendar-grid"></div>
             </div>
         </div>
+
+        <!-- Summary View -->
+        <div id="summary-view" class="view">
+            <div class="view-content">
+                <div class="view-title">All Entries</div>
+                <div id="entries-list" class="entries-list"></div>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js';
-        import { getDatabase, ref, get, set, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js';
-
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyDDSfxQpyNfJfCb0V1D8K1U5j3Z9yzJmNc",
-            authDomain: "family-health-log-f9af4.firebaseapp.com",
-            databaseURL: "https://family-health-log-f9af4-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "family-health-log-f9af4",
-            storageBucket: "family-health-log-f9af4.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abcdef1234567890"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        // Make Firebase accessible globally
-        window.firebase = { database, ref, get, set, remove, onValue };
-    </script>
-
-    <script src="app.js"></script>
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js';
+    import { getDatabase, ref, get, set, remove } from 'https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js';
+    const firebaseConfig = {
+        apiKey: "AIzaSyDDSfxQpyNfJfCb0V1D8K1U5j3Z9yzJmNc",
+        authDomain: "family-health-log-f9af4.firebaseapp.com",
+        databaseURL: "https://family-health-log-f9af4-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "family-health-log-f9af4",
+        storageBucket: "family-health-log-f9af4.appspot.com",
+        messagingSenderId: "123456789012",
+        appId: "1:123456789012:web:abcdef1234567890"
+    };
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    window.firebase = { database, ref, get, set, remove };
+</script>
+<script src="app.js"></script>
 </body>
 </html>
